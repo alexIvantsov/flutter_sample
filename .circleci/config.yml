@@ -31,10 +31,9 @@ jobs:
 
 workflows:
   build_flutter:
-    when:
-      matches: {
-        pattern: 'v\.\d+\.\d+\.\d+',
-        value: << pipeline.git.tag >>
-      }
     jobs:
-      - build_flutter
+      - build_flutter:
+          filters:
+            tags:
+              only:
+                - v\.\d+\.\d+\.\d+
