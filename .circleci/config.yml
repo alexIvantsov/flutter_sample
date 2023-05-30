@@ -8,42 +8,39 @@ version: 2.1
 # See: https://circleci.com/docs/orb-intro/
 orbs:
   android: circleci/android@1.0.3
+  flutter: circleci/flutter@2.0.2
+
 
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/configuration-reference/#jobs
 jobs:
-  # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
-  build-and-test:
-    # These next lines define the Android machine image executor.
-    # See: https://circleci.com/docs/executor-types/
+  distribute:
     executor:
       name: android/android-machine
-
-    # Add steps to the job
-    # See: https://circleci.com/docs/configuration-reference/#steps
     steps:
-      # Checkout the code as the first step.
-      - checkout
-
-      # The next step will run the unit tests
-      - android/run-tests:
-          test-command: ./gradlew lint testDebug --continue
-
-      # Then start the emulator and run the Instrumentation tests!
-      - android/start-emulator-and-run-tests:
-          test-command: ./gradlew connectedDebugAndroidTest
-          system-image: system-images;android-25;google_apis;x86
-
-      # And finally run the release build
+      - flutter/install_sdk_and_pub:
+          version: 3.7.3
+      - flutter/install_android_gradle_dependencies
+      - flutter/install_android_gem
       - run:
-          name: Assemble release build
-          command: |
-            ./gradlew assembleRelease
+          command: bundle exec fastlane distribute
+          working_directory: ios
 
-# Invoke jobs via workflows
-# See: https://circleci.com/docs/configuration-reference/#workflows
+  build_flutter:
+    docker:
+      - image: optios/flutter-fastlane-android:latest
+    steps:
+      - flutter/install_sdk_and_pub:
+          version: 3.7.3
+      - flutter/install_android_gradle_dependencies
+      - flutter/install_android_gem
+      - run:
+            command: flutter pub get
+      - run:
+          name: build apk file
+          command: flutter build apk
+
 workflows:
-  sample: # This is the name of the workflow, feel free to change it to better match your workflow.
-    # Inside the workflow, you define the jobs you want to run.
+  build_flutter:
     jobs:
-      - build-and-test
+      - build_flutter
