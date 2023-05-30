@@ -16,7 +16,7 @@ version: 2.1
 jobs:
   build_flutter:
     docker:
-      - image: optios/flutter-fastlane-android:latest
+      - image: cirrusci/flutter:latest
     steps:
       - checkout
       - run: flutter doctor -v
