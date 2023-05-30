@@ -15,8 +15,6 @@ orbs:
 # See: https://circleci.com/docs/configuration-reference/#jobs
 jobs:
   build_flutter:
-    docker:
-      - image: optios/flutter-fastlane-android:latest
     steps:
       - flutter/install_sdk_and_pub:
           version: 3.7.3
