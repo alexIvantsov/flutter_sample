@@ -21,7 +21,7 @@ jobs:
       tag: 2023.05.1
     steps:
       - flutter/install_sdk:
-            version: 3.7.0
+            version: 3.7.3
       - checkout
       - run: flutter doctor -v
       - run: flutter pub get
