@@ -18,6 +18,7 @@ jobs:
     docker:
       - image: optios/flutter-fastlane-android:latest
     steps:
+      - checkout
       - run: flutter doctor -v
       - run: flutter pub get
       - run:
