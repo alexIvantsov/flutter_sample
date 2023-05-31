@@ -10,18 +10,15 @@ orbs:
   android: circleci/android@2.3.0
   flutter: circleci/flutter@2.0.2
 
-executors:
-  android:
-    name: android/android-machine
-    tag: 2023.05.1
-
 
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/configuration-reference/#jobs
 jobs:
 
   build:
-    executor: android
+    executor:
+      name: android/android-machine
+      tag: 2023.05.1
     steps:
       - flutter/install_sdk:
           version: 3.7.3
@@ -33,13 +30,26 @@ jobs:
             - .
 
   unit_test:
-    executor: android
+    executor:
+      name: android/android-machine
+      tag: 2023.05.1
     steps:
       - attach_workspace:
           at: .
       - flutter/install_sdk:
           version: 3.7.3
       - run: flutter test test/unit_test.dart
+
+  integration_test:
+    executor:
+      name: android/android-machine
+      tag: 2023.05.1
+    steps:
+      - attach_workspace:
+          at: .
+      - flutter/install_sdk:
+          version: 3.7.3
+      - run: flutter test integration_test/app_test.dart
 
   build_apk:
     executor:
@@ -60,6 +70,9 @@ workflows:
     jobs:
       - build
       - unit_test:
+          requires:
+            - build
+      - integration_test:
           requires:
             - build
 
