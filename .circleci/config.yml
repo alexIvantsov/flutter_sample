@@ -12,9 +12,8 @@ orbs:
 
 executors:
   android:
-    executor:
-      name: android/android-machine
-      tag: 2023.05.1
+    name: android/android-machine
+    tag: 2023.05.1
 
 
 # Define a job to be invoked later in a workflow.
