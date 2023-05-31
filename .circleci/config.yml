@@ -49,6 +49,7 @@ jobs:
           at: .
       - flutter/install_sdk:
           version: 3.7.3
+      - run: sdkmanager --list
       - android/create-avd:
           avd-name: avd
           install: true
