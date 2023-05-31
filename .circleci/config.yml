@@ -25,14 +25,18 @@ jobs:
       - run: flutter doctor -v
       - checkout
       - run: flutter pub get
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
 
   unit_test:
     executor:
       name: android/android-machine
       tag: 2023.05.1
     steps:
-      - flutter/install_sdk:
-          version: 3.7.3
+      - attach_workspace:
+          at: .
       - run: flutter test test/unit_test.dart
 
   build_apk:
