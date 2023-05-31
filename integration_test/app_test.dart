@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_sample/main.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
@@ -11,6 +13,11 @@ void main() {
             (tester) async {
           app.main();
           await tester.pumpAndSettle();
+
+          final homePage = find.byType(MyHomePage);
+          final State<MyHomePage> state = tester.state(homePage);
+          final size = MediaQuery.of(state.context).size;
+          print(size);
 
           // Verify the counter starts at 0.
           expect(find.text('0'), findsOneWidget);
