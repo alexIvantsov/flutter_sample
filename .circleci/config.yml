@@ -49,7 +49,9 @@ jobs:
           at: .
       - flutter/install_sdk:
           version: 3.7.3
-      - run: flutter test integration_test/app_test.dart
+     - android/start-emulator-and-run-tests:
+         test-command: flutter test integration_test/app_test.dart
+         system-image: system-images;android-30;google_apis;x86
 
   build_apk:
     executor:
