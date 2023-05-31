@@ -15,27 +15,53 @@ orbs:
 # See: https://circleci.com/docs/configuration-reference/#jobs
 jobs:
 
-  build_flutter:
+  build:
+    executor:
+      name: android/android-machine
+      tag: 2023.05.1
+    steps:
+      - flutter/install_sdk:
+          version: 3.7.3
+      - run: flutter doctor -v
+      - checkout
+      - run: flutter pub get
+
+  unit_test:
+    executor:
+      name: android/android-machine
+      tag: 2023.05.1
+    steps:
+      - flutter/install_sdk:
+          version: 3.7.3
+      - run: flutter test test/unit_test.dart
+
+  build_apk:
     executor:
       name: android/android-machine
       tag: 2023.05.1
     steps:
       - flutter/install_sdk:
             version: 3.7.3
-      - checkout
       - run: flutter doctor -v
+      - checkout
       - run: flutter pub get
       - run:
           name: build apk file
           command: flutter build apk
 
 workflows:
-  build_flutter:
+  build_and_test:
     jobs:
-      - build_flutter:
-          filters:
-            tags:
-              only:
-                - /v\.\d+\.\d+\.\d+/
-            branches:
-              ignore: /.*/
+      - build
+      - unit_test:
+          requires: build
+
+
+
+
+#      - build_flutter:
+#          filters:
+#            tags:
+#              only: /v\.\d+\.\d+\.\d+/
+#            branches:
+#              ignore: /.*/
