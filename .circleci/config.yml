@@ -37,6 +37,8 @@ jobs:
     steps:
       - attach_workspace:
           at: .
+      - flutter/install_sdk:
+          version: 3.7.3
       - run: flutter test test/unit_test.dart
 
   build_apk:
