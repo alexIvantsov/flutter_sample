@@ -35,11 +35,11 @@ jobs:
 
   distribute_apk:
     executor:
-        name: android/android-machine
-        tag: 2023.05.1
-      steps:
-        - attach_workspace:
-            at: .
+      name: android/android-machine
+      tag: 2023.05.1
+    steps:
+      - attach_workspace:
+          at: .
       - run: curl -sL https://firebase.tools | bash
       - run: firebase appdistribution:distribute ~/build/app/outputs/flutter-apk/app-release.apk --token "$FIREBASE_TOKEN" --app "$FIREBASE_APP_ID_ANDROID"
 
