@@ -12,7 +12,7 @@ commands:
         type: string
         default: ""
     steps:
-      - run: FLAVOR=$(echo << parameters.tag >> | cut -d'-' -f 3)
+      - run: echo 'export FLAVOR=$(echo << parameters.tag >> | cut -d'-' -f 3)' >> "$BASH_ENV"
 
 jobs:
   build_app:
