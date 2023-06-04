@@ -5,11 +5,12 @@ orbs:
   flutter: circleci/flutter@2.0.2
 
 commands:
-  get_flavour:
+  get_flavor:
     description: "Parses flavour from tag"
     parameters:
       tag:
         type: string
+        default: ""
     steps:
       - run: FLAVOR=`echo << parameters.tag >> | cut -d'-' -f 3`
 
@@ -22,7 +23,7 @@ jobs:
       - flutter/install_sdk:
           version: 3.7.3
       - checkout
-      - get_flavour:
+      - get_flavor:
           tag: << pipeline.git.tag >>
       - run: echo $FLAVOR
       - run: flutter pub get
@@ -43,7 +44,7 @@ jobs:
           at: .
       - flutter/install_sdk:
           version: 3.7.3
-      - get_flavour:
+      - get_flavor:
           tag: << pipeline.git.tag >>
       - run: echo $FLAVOR
       - run: flutter build apk
