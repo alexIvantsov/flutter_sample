@@ -36,9 +36,6 @@ jobs:
     executor:
       name: android/android-machine
       tag: 2023.05.1
-    parameters:
-      flavor:
-        type: string
     steps:
       - attach_workspace:
           at: .
