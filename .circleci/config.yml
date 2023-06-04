@@ -65,13 +65,13 @@ jobs:
 
 workflows:
   build_and_test:
-    filters:
-      tags:
-        only: /v\.\d+\.\d+\.\d+-android-\w+/
-      branches:
-        ignore: /.*/
     jobs:
-      - build_app
+      - build_app:
+          filters:
+            tags:
+              only: /v\.\d+\.\d+\.\d+-android-\w+/
+            branches:
+              ignore: /.*/
       - build_apk:
           requires:
             - build_app
