@@ -62,12 +62,10 @@ android {
 
     productFlavors {
         dev {
-            applicationId "${appIdentifier}.dev"
             dimension "app"
         }
 
         stage {
-            applicationId "${appIdentifier}.sage"
             dimension "app"
         }
     }
