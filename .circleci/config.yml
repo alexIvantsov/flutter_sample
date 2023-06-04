@@ -12,7 +12,7 @@ commands:
         type: string
         default: ""
     steps:
-      - run: FLAVOR=`echo << parameters.tag >> | cut -d'-' -f 3`
+      - run: FLAVOR=$(echo << parameters.tag >> | cut -d'-' -f 3)
 
 jobs:
   build_app:
