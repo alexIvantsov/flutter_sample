@@ -14,7 +14,7 @@ jobs:
           version: 3.7.3
       - checkout
       - run: flutter pub get
-      - run: base64 -d $GOOGLE_SERVICES_JSON > android/app/google-services.json
+      - run: echo $GOOGLE_SERVICES_JSON | base64 -d -o android/app/google-services.json
       - persist_to_workspace:
           root: .
           paths:
