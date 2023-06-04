@@ -4,6 +4,15 @@ orbs:
   android: circleci/android@2.3.0
   flutter: circleci/flutter@2.0.2
 
+commands:
+  get_flavour:
+    description: "Parses flavour from tag"
+    parameters:
+      tag:
+        type: string
+    steps:
+      - run: FLAVOR=`echo << parameters.tag >> | cut -d'-' -f 3`
+
 jobs:
   build_app:
     executor:
@@ -13,6 +22,9 @@ jobs:
       - flutter/install_sdk:
           version: 3.7.3
       - checkout
+      - get_flavour:
+          tag: << pipeline.git.tag >>
+      - run: echo $FLAVOR
       - run: flutter pub get
       - run: echo $GOOGLE_SERVICES_JSON | base64 -d > android/app/google-services.json
       - persist_to_workspace:
@@ -23,11 +35,17 @@ jobs:
     executor:
       name: android/android-machine
       tag: 2023.05.1
+    parameters:
+      flavor:
+        type: string
     steps:
       - attach_workspace:
           at: .
       - flutter/install_sdk:
           version: 3.7.3
+      - get_flavour:
+          tag: << pipeline.git.tag >>
+      - run: echo $FLAVOR
       - run: flutter build apk
       - persist_to_workspace:
           root: .
@@ -49,6 +67,11 @@ jobs:
 
 workflows:
   build_and_test:
+    filters:
+      tags:
+        only: /v\.\d+\.\d+\.\d+-android-\w+/
+      branches:
+        ignore: /.*/
     jobs:
       - build_app
       - build_apk:
