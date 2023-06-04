@@ -73,8 +73,18 @@ workflows:
             branches:
               ignore: /.*/
       - build_apk:
+          filters:
+            tags:
+              ignore: /.*/
+            branches:
+              ignore: /.*/
           requires:
             - build_app
       - distribute_apk:
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
           requires:
             - build_apk
