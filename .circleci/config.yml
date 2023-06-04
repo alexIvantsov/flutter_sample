@@ -12,7 +12,10 @@ commands:
         type: string
         default: ""
     steps:
-      - run: echo 'export FLAVOR=$(echo << parameters.tag >> | cut -d'-' -f 3)' >> "$BASH_ENV"
+      - run:
+          name: "Parse flavor from tag"
+          command: echo 'export FLAVOR=$(echo << parameters.tag >> | cut -d'-' -f 3)' >> "$BASH_ENV"
+      - run: echo $FLAVOR
 
   save_workspace:
     steps:
@@ -49,7 +52,7 @@ jobs:
           version: 3.7.3
       - get_flavor:
           tag: << pipeline.git.tag >>
-      - run: flutter build apk --flavor=$FLAVOR --dart-define=flavor=$FLAVOR
+      - run: flutter build apk --flavor $FLAVOR --dart-define=flavor=$FLAVOR
       - save_workspace
 
   distribute_apk:
