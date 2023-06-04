@@ -20,6 +20,7 @@ commands:
           root: .
           paths:
             - .
+
   restore_workspace:
     steps:
       - attach_workspace:
@@ -34,9 +35,6 @@ jobs:
       - flutter/install_sdk:
           version: 3.7.3
       - checkout
-      - get_flavor:
-          tag: << pipeline.git.tag >>
-      - run: echo $FLAVOR
       - run: flutter pub get
       - run: echo $GOOGLE_SERVICES_JSON | base64 -d > android/app/google-services.json
       - save_workspace
@@ -51,8 +49,7 @@ jobs:
           version: 3.7.3
       - get_flavor:
           tag: << pipeline.git.tag >>
-      - run: echo $FLAVOR
-      - run: flutter build apk
+      - run: flutter build apk --flavor=$FLAVOR --dart-define=flavor=$FLAVOR
       - save_workspace
 
   distribute_apk:
