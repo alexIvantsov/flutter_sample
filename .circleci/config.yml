@@ -62,7 +62,7 @@ jobs:
     steps:
       - restore_workspace
       - run: curl -sL https://firebase.tools | bash
-      - run: firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk
+      - run: firebase appdistribution:distribute build/app/outputs/flutter-apk/*.apk
           --token "$FIREBASE_TOKEN"
           --app "$FIREBASE_APP_ID_ANDROID"
           --groups "main"
