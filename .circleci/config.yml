@@ -14,6 +14,17 @@ commands:
     steps:
       - run: echo 'export FLAVOR=$(echo << parameters.tag >> | cut -d'-' -f 3)' >> "$BASH_ENV"
 
+  save_workspace:
+    steps:
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+  restore_workspace:
+    steps:
+      - attach_workspace:
+          at: .
+
 jobs:
   build_app:
     executor:
@@ -28,63 +39,51 @@ jobs:
       - run: echo $FLAVOR
       - run: flutter pub get
       - run: echo $GOOGLE_SERVICES_JSON | base64 -d > android/app/google-services.json
-      - persist_to_workspace:
-          root: .
-          paths:
-            - .
+      - save_workspace
+
   build_apk:
     executor:
       name: android/android-machine
       tag: 2023.05.1
     steps:
-      - attach_workspace:
-          at: .
+      - restore_workspace
       - flutter/install_sdk:
           version: 3.7.3
       - get_flavor:
           tag: << pipeline.git.tag >>
       - run: echo $FLAVOR
       - run: flutter build apk
-      - persist_to_workspace:
-          root: .
-          paths:
-            - .
+      - save_workspace
 
   distribute_apk:
     executor:
       name: android/android-machine
       tag: 2023.05.1
     steps:
-      - attach_workspace:
-          at: .
+      - restore_workspace
       - run: curl -sL https://firebase.tools | bash
       - run: firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk
-         --token "$FIREBASE_TOKEN"
-         --app "$FIREBASE_APP_ID_ANDROID"
-         --groups "main"
+          --token "$FIREBASE_TOKEN"
+          --app "$FIREBASE_APP_ID_ANDROID"
+          --groups "main"
+
+workflow_execute_filter: &workflow_execute_filter
+  filters:
+    tags:
+      only: /v\.\d+\.\d+\.\d+-android-\w+/
+    branches:
+      ignore: /.*/
 
 workflows:
   build_and_test:
     jobs:
       - build_app:
-          filters:
-            tags:
-              only: /v\.\d+\.\d+\.\d+-android-\w+/
-            branches:
-              ignore: /.*/
+          <<: *workflow_execute_filter
       - build_apk:
-          filters:
-            tags:
-              ignore: /.*/
-            branches:
-              ignore: /.*/
+          <<: *workflow_execute_filter
           requires:
             - build_app
       - distribute_apk:
-          filters:
-            tags:
-              only: /.*/
-            branches:
-              ignore: /.*/
+          <<: *workflow_execute_filter
           requires:
             - build_apk
