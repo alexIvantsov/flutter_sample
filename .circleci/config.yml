@@ -44,7 +44,7 @@ jobs:
     executor:
       name: android/android-machine
       tag: 2023.05.1
-    parallelism: 2
+#    parallelism: 2
     steps:
       - attach_workspace:
           at: .
